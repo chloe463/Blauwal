@@ -206,15 +206,36 @@ trait Blauwal
      *
      * @return  array
      */
-    public function find($filter, $options, $read_preference_mode = \MongoDB\Driver\ReadPreference::RP_PRIMARY)
+    public function find($filter, $fields = [], $options = [], $read_preference_mode = \MongoDB\Driver\ReadPreference::RP_PRIMARY)
     {
-        $query          = new \MongoDB\Driver\Query($filter, $options);
+        $query          = new \MongoDB\Driver\Query($filter, $this->mergeProjectionAndOption($fields, $options));
         $read_reference = new \MongoDB\Driver\ReadPreference($read_preference_mode);
         $cursor         = $this->connect()->executeQuery($this->getTarget(), $query, $read_reference);
 
         $this->disconnect();
 
         return $cursor->toArray();
+    }
+
+    /**
+     * Merge projection and other options
+     *
+     * @param   array   $fields
+     * @param   array   $options
+     *
+     * @return  array   $options
+     */
+    public function mergeProjectionAndOption($fields, $options)
+    {
+        if (isset($options['projection'])) {
+            foreach ($fields as $key => $value) {
+                $options['projection'][$key] = $value;
+            }
+            return $options;
+        }
+
+        $options['projection'] = $fields;
+        return $options;
     }
 
     /**
