@@ -131,11 +131,11 @@ trait Blauwal
      */
     public function connect()
     {
-        if (is_a($this->dbh, '\MongoDB\Driver\Manager')) {
-            return $this->dbh;
+        if (!is_a($this->dbh, '\MongoDB\Driver\Manager')) {
+            $this->dbh = new \MongoDB\Driver\Manager($this->buildUri(), $this->getOptions(), $this->getDriverOptions());
         }
 
-        $this->dbh = new \MongoDB\Driver\Manager($this->buildUri(), $this->getOptions(), $this->getDriverOptions());
+        return $this->dbh;
     }
 
     /**
@@ -210,7 +210,9 @@ trait Blauwal
     {
         $query          = new \MongoDB\Driver\Query($filter, $options);
         $read_reference = new \MongoDB\Driver\ReadPreference($read_preference_mode);
-        $cursor         = $this->dbh->executeQuery($this->getTarget(), $query, $read_reference);
+        $cursor         = $this->connect()->executeQuery($this->getTarget(), $query, $read_reference);
+
+        $this->disconnect();
 
         return $cursor->toArray();
     }
