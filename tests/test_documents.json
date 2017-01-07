@@ -1,0 +1,12 @@
+[
+    {"blauwalTest": true, "name":"hoge", "subject": "Japanese", "score": 90, "timeField": "2017-01-06 12:00:00"},
+    {"blauwalTest": true, "name":"hoge", "subject": "Math", "score": 90, "timeField": "2017-01-06 12:00:00"},
+    {"blauwalTest": true, "name":"hoge", "subject": "English", "score": 90, "timeField": "2017-01-06 12:00:00"},
+    {"blauwalTest": true, "name":"foo", "subject": "Japanese", "score": 100, "timeField": "2017-01-07 12:00:00"},
+    {"blauwalTest": true, "name":"foo", "subject": "Math", "score": 100, "timeField": "2017-01-07 12:00:00"},
+    {"blauwalTest": true, "name":"foo", "subject": "English", "score": 100, "timeField": "2017-01-07 12:00:00"},
+    {"blauwalTest": true, "name":"bar", "subject": "Japanese", "score": 30, "timeField": "2017-01-07 12:00:00"},
+    {"blauwalTest": true, "name":"bar", "subject": "Math", "score": 60, "timeField": "2017-01-08 12:00:00"},
+    {"blauwalTest": true, "name":"bar", "subject": "English", "score": 50, "timeField": "2017-01-08 12:00:00"},
+    {"blauwalTest": true, "name":"bar", "subject": "English", "score": 50, "timeField":  "2017-01-08 12:00:00"}
+]
