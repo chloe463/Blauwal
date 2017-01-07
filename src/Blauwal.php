@@ -178,10 +178,14 @@ trait Blauwal
      * @param   string  $time
      * Time format is YYYY-MM-DD hh:mm:ss, YYYY/MM/DD hh:mm:ss or milliseconds from the UNIX epoch
      */
-    public function convert2UTCDateTime($time)
+    public function convert2UTCDateTime($time = '')
     {
         if (preg_match('/[0-9]{4}[\-\/][0-9]{2}[\-\/][0-9]{2}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/', $time, $matches)) {
             $milliseconds = (new \DateTime($time))->getTimeStamp() * 1000;
+            return new \MongoDB\BSON\UTCDateTime($milliseconds);
+        }
+        if ($time === '') {
+            $milliseconds = (new \DateTime())->getTimeStamp() * 1000;
             return new \MongoDB\BSON\UTCDateTime($milliseconds);
         }
         return new \MongoDB\BSON\UTCDateTime($time);
