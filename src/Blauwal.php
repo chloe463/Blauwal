@@ -2,7 +2,8 @@
 /**
  * chloe463\Blauwal\Blauwal
  *
- * A wrapper class(trait) of MongoDB\Driver
+ * A wrapper class(trait) of MongoDB\Driver.
+ * See detailed info of MongoDB class at https://secure.php.net/manual/ja/set.mongodb.php
  */
 
 namespace chloe463\Blauwal;
@@ -85,6 +86,10 @@ trait Blauwal
 
     /**
      * Initialize
+     *
+     * @param   array   $connection_info
+     * @param   array   $options
+     * @param   array   $driver_options
      */
     public function init($connection_info, $options = [], $driver_options = [])
     {
@@ -163,6 +168,11 @@ trait Blauwal
 
     /**
      * Instantiate \MongoDB\BSON\Regex
+     *
+     * @param   string  $regex
+     * @param   string  $flags
+     *
+     * @return  \MongoDB\BSON\Regex
      */
     public function convert2Regex($regex, $flags = '')
     {
@@ -177,6 +187,8 @@ trait Blauwal
      *
      * @param   string  $time
      * Time format is YYYY-MM-DD hh:mm:ss, YYYY/MM/DD hh:mm:ss or milliseconds from the UNIX epoch
+     *
+     * @return  \MongoDB\BSON\UTCDateTime
      */
     public function convert2UTCDateTime($time = '')
     {
@@ -193,6 +205,12 @@ trait Blauwal
 
     /**
      * Build \MonboDB\Driver\WriteConcern to pass \MongoDB\Driver\executeBulkWrite
+     *
+     * @param   int|string  $w
+     * @param   int         $wtimeout   (milliseconds)
+     * @param   boolean     $journal
+     *
+     * return \MongoDB\Driver\WriteConcern
      */
     public function buildWriteConcern($w = \MongoDB\Driver\WriteConcern::MAJORITY, $wtimeout = 1000000, $journal = true)
     {
@@ -202,10 +220,16 @@ trait Blauwal
     /**
      * Execute insert.
      * Insert record one by one.
+     * See
+     *  - secure.php.net/manual/ja/class.mongodb-driver-bulkwrite.php
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-writeconcern.php
+     *  to get more information of BulkWrite and WriteConcern
      *
      * @param   array   $new_documents
      * @param   boolean $ordered
      * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     *
+     * @return  \MongoDB\Driver\WriteResult
      */
     public function insert($new_documents, $ordered = true, \MongoDB\Driver\WriteConcern $write_concern = null)
     {
@@ -225,11 +249,17 @@ trait Blauwal
 
     /**
      * Execute insert.
-     * Insert big array once.
+     * Insert big array at once.
+     * See
+     *  - secure.php.net/manual/ja/class.mongodb-driver-bulkwrite.php
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-writeconcern.php
+     *  to get more information of BulkWrite and WriteConcern
      *
      * @param   array   $new_documents
      * @param   boolean $ordered
      * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     *
+     * @return  \MongoDB\Driver\WriteResult
      */
     public function batchInsert($new_documents, $ordered = true, \MongoDB\Driver\WriteConcern $write_concern = null)
     {
@@ -249,6 +279,9 @@ trait Blauwal
 
     /**
      * Execute find and return documents
+     * See
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-readpreference.php
+     *  to get more information of BulkWrite and ReadPreference
      *
      * @param   array   $filter
      * @param   array   $options
@@ -269,6 +302,10 @@ trait Blauwal
 
     /**
      * Merge projection and other options
+     * See
+     *  - secure.php.net/manual/ja/class.mongodb-driver-bulkwrite.php
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-writeconcern.php
+     *  to get more information of BulkWrite and WriteConcern
      *
      * @param   array   $fields
      * @param   array   $options
@@ -290,11 +327,17 @@ trait Blauwal
 
     /**
      * Execute update
+     * See
+     *  - secure.php.net/manual/ja/class.mongodb-driver-bulkwrite.php
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-writeconcern.php
+     *  to get more information of BulkWrite and WriteConcern
      *
      * @param   array   $filter
      * @param   array   $update_values
      * @param   array   $options
      * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     *
+     * @return  \MongoDB\Driver\WriteResult
      */
     public function update($filter, $update_values, $options = [], \MongoDB\Driver\WriteConcern $write_concern = null)
     {
@@ -312,10 +355,16 @@ trait Blauwal
 
     /**
      * Execute remove
+     * See
+     *  - secure.php.net/manual/ja/class.mongodb-driver-bulkwrite.php
+     *  - https://secure.php.net/manual/ja/class.mongodb-driver-writeconcern.php
+     *  to get more information of BulkWrite and WriteConcern
      *
      * @param   array   $filter
      * @param   array   $options
      * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     *
+     * @return  \MongoDB\Driver\WriteResult
      */
     public function remove($filter, $options = [], \MongoDB\Driver\WriteConcern $write_concern = null)
     {
