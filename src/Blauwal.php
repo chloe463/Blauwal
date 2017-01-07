@@ -291,11 +291,23 @@ trait Blauwal
     /**
      * Execute update
      *
-     * @todo Implement this method
+     * @param   array   $filter
+     * @param   array   $update_values
+     * @param   array   $options
+     * @param   \MongoDB\Driver\WriteConcern    $write_concern
      */
-    public function update()
+    public function update($filter, $update_values, $options = [], \MongoDB\Driver\WriteConcern $write_concern = null)
     {
-        throw new Exception(__METHOD__ . " is not implemented yet.");
+        $set = [
+            '$set' => $update_values
+        ];
+        $bulk = new \MongoDB\Driver\BulkWrite();
+        $bulk->update($filter, $set, $options);
+        $write_result = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
+
+        $this->disconnect();
+
+        return $write_result;
     }
 
     /**
