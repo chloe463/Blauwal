@@ -313,10 +313,18 @@ trait Blauwal
     /**
      * Execute remove
      *
-     * @todo Implement this method
+     * @param   array   $filter
+     * @param   array   $options
+     * @param   \MongoDB\Driver\WriteConcern    $write_concern
      */
-    public function remove()
+    public function remove($filter, $options = [], \MongoDB\Driver\WriteConcern $write_concern = null)
     {
-        throw new Exception(__METHOD__ . " is not implemented yet.");
+        $bulk = new \MongoDB\Driver\BulkWrite();
+        $bulk->delete($filter, $options);
+        $write_result = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
+
+        $this->disconnect();
+
+        return $write_result;
     }
 }
