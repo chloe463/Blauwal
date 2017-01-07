@@ -192,13 +192,59 @@ trait Blauwal
     }
 
     /**
-     * Execute insert
-     *
-     * @todo Implement this method
+     * Build \MonboDB\Driver\WriteConcern to pass \MongoDB\Driver\executeBulkWrite
      */
-    public function insert()
+    public function buildWriteConcern($w = \MongoDB\Driver\WriteConcern::MAJORITY, $wtimeout = 1000000, $journal = true)
     {
-        throw new Exception(__METHOD__ . " is not implemented yet.");
+        return new \MongoDB\Driver\WriteConcern($w, $wtimeout, $journal);
+    }
+
+    /**
+     * Execute insert.
+     * Insert record one by one.
+     *
+     * @param   array   $new_documents
+     * @param   boolean $ordered
+     * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     */
+    public function insert($new_documents, $ordered = true, \MongoDB\Driver\WriteConcern $write_concern = null)
+    {
+        $ids           = [];
+        $write_results = [];
+
+        foreach ($new_documents as $doc) {
+            $bulk            = new \MongoDB\Driver\Bulkwrite(['ordered' => $ordered]);
+            $ids[]           = $bulk->insert($doc);
+            $write_results[] = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
+        }
+
+        $this->disconnect();
+
+        return $write_results;
+    }
+
+    /**
+     * Execute insert.
+     * Insert big array once.
+     *
+     * @param   array   $new_documents
+     * @param   boolean $ordered
+     * @param   \MongoDB\Driver\WriteConcern    $write_concern
+     */
+    public function batchInsert($new_documents, $ordered = true, \MongoDB\Driver\WriteConcern $write_concern = null)
+    {
+        $ids          = [];
+        $write_result = null;
+
+        foreach ($new_documents as $doc) {
+            $bulk     = new \MongoDB\Driver\Bulkwrite(['ordered' => $ordered]);
+            $ids[]    = $bulk->insert($doc);
+        }
+        $write_result = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
+
+        $this->disconnect();
+
+        return $write_result;
     }
 
     /**
