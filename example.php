@@ -1,18 +1,3 @@
-# Blauwal
-
-## Summary
-A wrapper class(trait) of MongoDB\Driver
-
-## Install
-
-```bash
-$ composer require chloe463\blauwal
-```
-
-## Usage
-
-
-```php
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -26,21 +11,18 @@ class BlauwalDummyClass
     public function __construct()
     {
         $connection_info = [
-            'host'            => DB_HOST,
-            'port'            => DB_PORT,
-            'user'            => DB_USER,
-            'pass'            => DB_PASS,
-            'db_name'         => DB_NAME,
-            'collection_name' => COLLECTION
+            'host'            => 'localhost',
+            'port'            => 27017,
+            'user'            => 'blauwal',
+            'pass'            => 'password',
+            'db_name'         => 'test',
+            'collection_name' => 'blauwal_test'
         ];
         $this->init($connection_info);
     }
 
-    public function doSomething()
+    public function fetch()
     {
-        /**
-         * Find
-         */
         $queries = [
             'score'      => [ '$gte' => 96 ],
             'name'       => $this->convert2Regex('foo'),
@@ -60,12 +42,17 @@ class BlauwalDummyClass
         try {
             $documents = $this->find($queries, $fields);
         } catch (\Exception $e) {
-            // Handle exception
+            echo $e->getCode() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            throw $e;
         }
+        print_r($documents);
+    }
 
-        /**
-         * Insert
-         */
+    public function store()
+    {
+        $now = (new \DateTime())->getTimeStamp();
+        $name = md5($now);
         $new_docs = [
             ['insertTest' => true, 'name' => $name, 'subject' => 'Japanese', 'score' => rand(50, 100), 'created_at' => $this->convert2UTCDateTime()],
             ['insertTest' => true, 'name' => $name, 'subject' => 'Math', 'score' => rand(50, 100), 'created_at' => $this->convert2UTCDateTime()],
@@ -79,42 +66,58 @@ class BlauwalDummyClass
             $write_result  = $this->insert($new_docs, $ordered, $write_concern);
             // $write_result  = $this->batchInsert($new_docs, $ordered, $write_concern);
         } catch (\Exception $e) {
-            // Handle exception
+            echo $e->getCode() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            throw $e;
         }
+        var_dump($write_result);
+    }
 
-        /**
-         * Update
-         */
-        $query = ['insertTest' => true];
-        $set   = [
+    public function edit()
+    {
+        $query = [
+            'insertTest' => true
+        ];
+        $set = [
             '$set' => [
                 'insertTest' => false
             ]
         ];
+        $write_concern = $this->buildWriteConcern();
+
         $write_result  = null;
 
         try {
-            $write_result = $this->update($query, $set, ['multi' => true], $this->buildWriteConcern());
+            $write_result = $this->update($query, $set, ['multi' => true], $write_concern);
         } catch (\Exception $e) {
-            // Handle exception
+            echo $e->getCode() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            throw $e;
         }
+        var_dump($write_result);
+    }
 
-        /**
-         * Remove
-         */
+    public function delete()
+    {
         $query = [
             'insertTest' => false
         ];
-        $options       = [];
         $write_concern = $this->buildWriteConcern();
         $write_result  = null;
 
         try {
-            $write_result = $this->remove($query, $options, $write_concern);
+            $write_result = $this->remove($query);
         } catch (\Exception $e) {
-            // Handle exception
+            echo $e->getCode() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            throw $e;
         }
+        var_dump($write_result);
     }
 }
-```
 
+$blauwal_dummy = new BlauwalDummyClass();
+$blauwal_dummy->fetch();
+$blauwal_dummy->store();
+$blauwal_dummy->edit();
+$blauwal_dummy->delete();
