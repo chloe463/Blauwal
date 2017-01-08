@@ -1,0 +1,13 @@
+language: php
+php:
+  - '5.5'
+services:
+  - mongodb
+before_script:
+  - mongo phpunit --eval 'db.addUser("blauwal", "blauwal");'
+  - ./tests/mongo-php-driver-installer.sh
+  - composer self-update
+  - composer install
+script:
+  - vendor/bin/phpunit
+
