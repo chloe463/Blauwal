@@ -404,6 +404,12 @@ class BlauwalTest extends \PHPUnit_Framework_TestCase
         $actual_result = $this->object->convert2UTCDateTime($time);
         $this->assertInstanceOf($expected_class_name, $actual_result);
         $this->assertEquals($milliseconds, $actual_result->__toString());
+
+        $time          = '2017/01/08 12:00:00';
+        $milliseconds  = (new \DateTime($time))->getTimeStamp() * 1000;
+        $actual_result = $this->object->convert2UTCDateTime($milliseconds);
+        $this->assertInstanceOf($expected_class_name, $actual_result);
+        $this->assertEquals($milliseconds, $actual_result->__toString());
     }
 
     /**
