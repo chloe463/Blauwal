@@ -266,9 +266,9 @@ trait Blauwal
         $ids          = [];
         $write_result = null;
 
+        $bulk = new \MongoDB\Driver\Bulkwrite(['ordered' => $ordered]);
         foreach ($new_documents as $doc) {
-            $bulk     = new \MongoDB\Driver\Bulkwrite(['ordered' => $ordered]);
-            $ids[]    = $bulk->insert($doc);
+            $ids[] = $bulk->insert($doc);
         }
         $write_result = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
 
