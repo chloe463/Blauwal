@@ -341,11 +341,8 @@ trait Blauwal
      */
     public function update($filter, $update_values, $options = [], \MongoDB\Driver\WriteConcern $write_concern = null)
     {
-        $set = [
-            '$set' => $update_values
-        ];
         $bulk = new \MongoDB\Driver\BulkWrite();
-        $bulk->update($filter, $set, $options);
+        $bulk->update($filter, $update_values, $options);
         $write_result = $this->connect()->executeBulkWrite($this->getTarget(), $bulk, $write_concern);
 
         $this->disconnect();
