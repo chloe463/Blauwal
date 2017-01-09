@@ -40,7 +40,7 @@ class BlauwalDummyClass
 
         $documents = [];
         try {
-            $documents = $this->find($queries, $fields);
+            $documents = $this->find($queries, $fields, [], $this->buildReadPreference());
         } catch (\Exception $e) {
             echo $e->getCode() . PHP_EOL;
             echo $e->getMessage() . PHP_EOL;

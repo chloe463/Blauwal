@@ -435,6 +435,26 @@ class BlauwalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * chloe463\Blauwal\Blauwal::buildReadPreference
+     */
+    public function testBuildReadPreference()
+    {
+        $expected_class_name = '\MongoDB\Driver\ReadPreference';
+
+        // Pass no arguments
+        $actual_result       = $this->object->buildReadPreference();
+        $this->assertInstanceOf($expected_class_name, $actual_result);
+        $this->assertEquals(\MongoDB\Driver\ReadPreference::RP_PRIMARY, $actual_result->getMode());
+        $this->assertEquals([], $actual_result->getTagSets());
+
+        // Pass 3 arguments
+        $actual_result       = $this->object->buildReadPreference(\MongoDB\Driver\ReadPreference::RP_PRIMARY_PREFERRED, [['dc' => 'local']]);
+        $this->assertInstanceOf($expected_class_name, $actual_result);
+        $this->assertEquals(\MongoDB\Driver\ReadPreference::RP_PRIMARY_PREFERRED, $actual_result->getMode());
+        $this->assertEquals([['dc' => 'local']], $actual_result->getTagSets());
+    }
+
+    /**
      * chloe463\Blauwal\Blauwal::insert
      */
     public function testInsert()
@@ -496,7 +516,9 @@ class BlauwalTest extends \PHPUnit_Framework_TestCase
             'subject' => 1,
             'score'   => 1
         ];
-        $actual_result = $this->object->find($filter, $fields);
+        $options         = [];
+        $read_preference = $this->object->buildReadPreference();
+        $actual_result   = $this->object->find($filter, $fields, $options, $read_preference);
         $this->assertCount(3, $actual_result);
         foreach ($actual_result as $item) {
             $this->assertEquals('foo', $item->name);

@@ -218,6 +218,19 @@ trait Blauwal
     }
 
     /**
+     * Build \MongoDB\Driver\ReadPreference to pass \MongoDB\Driver\executeQuery
+     *
+     * @param   int     $mode
+     * @param   array   $tag_set
+     *
+     * return \MongoDB\Driver\ReadPreference
+     */
+    public function buildReadPreference($mode = \MongoDB\Driver\ReadPreference::RP_PRIMARY, $tag_set = [])
+    {
+        return new \MongoDB\Driver\ReadPreference($mode, $tag_set);
+    }
+
+    /**
      * Execute insert.
      * Insert record one by one.
      * See
@@ -289,11 +302,10 @@ trait Blauwal
      *
      * @return  array
      */
-    public function find($filter, $fields = [], $options = [], $read_preference_mode = \MongoDB\Driver\ReadPreference::RP_PRIMARY)
+    public function find($filter, $fields = [], $options = [], $read_preference)
     {
-        $query          = new \MongoDB\Driver\Query($filter, $this->mergeProjectionAndOption($fields, $options));
-        $read_reference = new \MongoDB\Driver\ReadPreference($read_preference_mode);
-        $cursor         = $this->connect()->executeQuery($this->getTarget(), $query, $read_reference);
+        $query  = new \MongoDB\Driver\Query($filter, $this->mergeProjectionAndOption($fields, $options));
+        $cursor = $this->connect()->executeQuery($this->getTarget(), $query, $read_preference);
 
         $this->disconnect();
 
